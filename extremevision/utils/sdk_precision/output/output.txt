@@ -1,0 +1,9 @@
+# 当前设置的IOU: 0.5 
+
+#每个标签类型的总数
+clothes: 22
+no_clothes: 128
+
+#被检查标签数目的情况
+no_clothes: 106 (tp:92, fp:14)  perssion=0.8679
+recall=0.7188

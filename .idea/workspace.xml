@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="13704f7f-75de-4989-86ba-6ab7c3f4c830" name="Default Changelist" comment="v3.1.0 update-data-set">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="MERGE" />
+  </component>
+  <component name="ProjectId" id="1eMDMUC0OhxX3MFhMvPLoKywuPB" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/extremevision/sdk_package/ias" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\extremevision\extremevision\extremevision\sdk_package\ias" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\libs" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package\ias" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\extremevision\extremevision\extremevision\sdk_package\ias" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package\ias" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.sdk_performance">
+    <configuration name="connect_server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="extremevision" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/extremevision/utils" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/extremevision/utils/connect_server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="manage" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="extremevision" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Administrator\.virtualenvs\flask_demo-K5aRqDx9\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sdk_performance" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="extremevision" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/extremevision/api_1_0" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/extremevision/api_1_0/sdk_performance.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sdk_vas_ias_svas" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="extremevision" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/extremevision/api_1_0" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/extremevision/api_1_0/sdk_vas_ias_svas.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.sdk_performance" />
+        <item itemvalue="Python.sdk_vas_ias_svas" />
+        <item itemvalue="Python.connect_server" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="13704f7f-75de-4989-86ba-6ab7c3f4c830" name="Default Changelist" comment="" />
+      <created>1594122519235</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1594122519235</updated>
+      <workItem from="1594122520407" duration="19408000" />
+      <workItem from="1594276263806" duration="3814000" />
+      <workItem from="1594364083529" duration="37396000" />
+      <workItem from="1594956787978" duration="11517000" />
+      <workItem from="1595389747660" duration="33976000" />
+      <workItem from="1595995905227" duration="24198000" />
+      <workItem from="1597131736818" duration="19175000" />
+      <workItem from="1597371756930" duration="10528000" />
+      <workItem from="1598327318610" duration="4209000" />
+      <workItem from="1598521141411" duration="11444000" />
+      <workItem from="1598670712526" duration="16607000" />
+    </task>
+    <task id="LOCAL-00001" summary="v1.3">
+      <created>1595847787544</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1595847787544</updated>
+    </task>
+    <task id="LOCAL-00002" summary="v1.3">
+      <created>1595847831612</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1595847831612</updated>
+    </task>
+    <task id="LOCAL-00003" summary="v1.4">
+      <created>1595904597203</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1595904597203</updated>
+    </task>
+    <task id="LOCAL-00004" summary="v1.3">
+      <created>1595905336582</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1595905336582</updated>
+    </task>
+    <task id="LOCAL-00005" summary="v1.5-sdk-performance">
+      <created>1595995073509</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1595995073509</updated>
+    </task>
+    <task id="LOCAL-00006" summary="v1.5">
+      <created>1596010229066</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1596010229066</updated>
+    </task>
+    <task id="LOCAL-00007" summary="v1.5-sdk-performance">
+      <created>1596014553844</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1596014553844</updated>
+    </task>
+    <task id="LOCAL-00008" summary="v1.5-sdk-performance-fix-subprocess">
+      <created>1596016278953</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1596016278953</updated>
+    </task>
+    <task id="LOCAL-00009" summary="v1.5-sdk-performance-fix-subprocess">
+      <created>1596016530884</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1596016530884</updated>
+    </task>
+    <task id="LOCAL-00010" summary="v1.5-sdk-performance">
+      <created>1596075535345</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1596075535345</updated>
+    </task>
+    <task id="LOCAL-00011" summary="v1.5-sdk-performance">
+      <created>1596101887875</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1596101887875</updated>
+    </task>
+    <task id="LOCAL-00012" summary="V1.7-algo-run-files">
+      <created>1597369240958</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1597369240959</updated>
+    </task>
+    <task id="LOCAL-00013" summary="V1.7-algo-run-files">
+      <created>1597370158054</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1597370158054</updated>
+    </task>
+    <task id="LOCAL-00014" summary="V1.7-algo-run-files">
+      <created>1597371788858</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1597371788858</updated>
+    </task>
+    <task id="LOCAL-00015" summary="V1.8-fixed-router-name-format">
+      <created>1597744688860</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1597744688860</updated>
+    </task>
+    <task id="LOCAL-00016" summary="V1.8-fixed-router-name-format">
+      <created>1597744701212</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1597744701212</updated>
+    </task>
+    <task id="LOCAL-00017" summary="V2.0.1 test_ws-celery">
+      <created>1598673759045</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1598673759045</updated>
+    </task>
+    <task id="LOCAL-00018" summary="V2.0.1 update-celery-flask">
+      <created>1598839512002</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1598839512002</updated>
+    </task>
+    <task id="LOCAL-00019" summary="V2.0.1 update-celery-flask">
+      <created>1598841357862</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1598841357862</updated>
+    </task>
+    <task id="LOCAL-00020" summary="V2.0.1 update-celery-flask">
+      <created>1598841643984</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1598841643984</updated>
+    </task>
+    <task id="LOCAL-00021" summary="V3.0.0  &quot;update ias sdk_files&quot;">
+      <created>1599122729162</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1599122729162</updated>
+    </task>
+    <task id="LOCAL-00022" summary="V3.0.0  &quot;update ias sdk_files&quot;">
+      <created>1599124294054</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1599124294054</updated>
+    </task>
+    <task id="LOCAL-00023" summary="V3.0.1  &quot;fix package ias&quot;">
+      <created>1599127283940</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1599127283940</updated>
+    </task>
+    <task id="LOCAL-00024" summary="v3.1.0 update-data-set">
+      <created>1599466547276</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1599466547276</updated>
+    </task>
+    <task id="LOCAL-00025" summary="v3.1.0 update-data-set">
+      <created>1599467181882</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1599467181882</updated>
+    </task>
+    <task id="LOCAL-00026" summary="v3.1.0 update-data-set">
+      <created>1599467266122</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1599467266122</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="v1.4" />
+    <MESSAGE value="v1.3" />
+    <MESSAGE value="v1.5" />
+    <MESSAGE value="v1.5-sdk-performance-fix-subprocess" />
+    <MESSAGE value="v1.5-sdk-performance" />
+    <MESSAGE value="V1.7-algo-run-files" />
+    <MESSAGE value="V1.8-fixed-router-name-format" />
+    <MESSAGE value="V2.0.1 test_ws-celery" />
+    <MESSAGE value="V2.0.1 update-celery-flask" />
+    <MESSAGE value="V3.0.0  &quot;update ias sdk_files&quot;" />
+    <MESSAGE value="V3.0.1  &quot;fix package ias&quot;" />
+    <MESSAGE value="v3.1.0 update-data-set" />
+    <option name="LAST_COMMIT_MESSAGE" value="v3.1.0 update-data-set" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="552" y="182" key="#Notifications" timestamp="1595995316950">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="552" y="182" key="#Notifications/0.0.1920.1050@0.0.1920.1050" timestamp="1595995316950" />
+    <state x="414" y="179" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594125987805">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="414" y="179" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1594125987805" />
+    <state x="903" y="340" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1599123525826">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="903" y="340" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1599123525826" />
+    <state x="690" y="270" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1599123809002">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="690" y="270" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1599123809002" />
+    <state x="560" y="117" key="CommitChangelistDialog2" timestamp="1599467815359">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="560" y="117" key="CommitChangelistDialog2/0.0.1920.1050@0.0.1920.1050" timestamp="1599467815359" />
+    <state x="740" y="279" key="FileChooserDialogImpl" timestamp="1595847638462">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="279" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1595847638462" />
+    <state x="818" y="414" key="Github.ShareDialog" timestamp="1595847673726">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="818" y="414" key="Github.ShareDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1595847673726" />
+    <state width="1876" height="280" key="GridCell.Tab.0.bottom" timestamp="1595995844273">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="280" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1595995844273" />
+    <state width="1876" height="280" key="GridCell.Tab.0.center" timestamp="1595995844273">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="280" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1595995844273" />
+    <state width="1876" height="280" key="GridCell.Tab.0.left" timestamp="1595995844273">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="280" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1595995844273" />
+    <state width="1876" height="280" key="GridCell.Tab.0.right" timestamp="1595995844273">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="280" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1595995844273" />
+    <state x="184" y="86" key="MergeDialog" timestamp="1596073633803">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="184" y="86" key="MergeDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1596073633803" />
+    <state x="669" y="239" key="MultipleFileMergeDialog" timestamp="1598604939352">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="669" y="239" key="MultipleFileMergeDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1598604939352" />
+    <state x="461" y="156" key="SettingsEditor" timestamp="1598672411750">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="461" y="156" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1598672411750" />
+    <state x="552" y="257" key="Vcs.Push.Dialog.v2" timestamp="1599467267914">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="552" y="257" key="Vcs.Push.Dialog.v2/0.0.1920.1050@0.0.1920.1050" timestamp="1599467267914" />
+    <state x="640" y="347" key="com.intellij.ide.util.TipDialog" timestamp="1595995921178">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="640" y="347" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1595995921178" />
+    <state x="752" y="441" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1596072842457">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="752" y="441" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1050@0.0.1920.1050" timestamp="1596072842457" />
+    <state x="112" y="104" width="1462" height="927" key="find.popup" timestamp="1599467174622">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="112" y="104" width="1462" height="927" key="find.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1599467174622" />
+    <state x="612" y="257" width="672" height="678" key="search.everywhere.popup" timestamp="1599451364602">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="612" y="257" width="672" height="678" key="search.everywhere.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1599451364602" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/extremevision$connect_server.coverage" NAME="connect_server Coverage Results" MODIFIED="1594633746588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/extremevision/utils" />
+    <SUITE FILE_PATH="coverage/extremevision$sdk_performance.coverage" NAME="sdk_performance Coverage Results" MODIFIED="1595918374488" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/extremevision/api_1_0" />
+    <SUITE FILE_PATH="coverage/extremevision$sdk_vas_ias_svas.coverage" NAME="sdk_vas_ias_svas Coverage Results" MODIFIED="1595407182470" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/extremevision/api_1_0" />
+  </component>
+</project>
