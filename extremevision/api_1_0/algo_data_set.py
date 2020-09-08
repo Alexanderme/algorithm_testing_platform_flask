@@ -84,8 +84,7 @@ def format_xml():
     secure_filename(filename)
     xml_file.save(file_name)
     os.system(f"unzip {file_name} -d {files_dir}")
-    os.system(f"rm -rf file_name")
-    print("rm -rf file_name")
+    os.system(f"rm -rf {file_name}")
 
     xml_files = iter_files(files_dir)
     for xml in xml_files:
@@ -95,9 +94,9 @@ def format_xml():
         root = prettyXml(root, indent, newline, level)  # 执行美化方法
         tree = ElementTree.ElementTree(root)  # 转换为可保存的结构
         tree.write(xml)  # 保存美化后的结果
-    os.system(f"cd  {files_dir};tar -cvf result_xml.tar {files_dir}; mv result_xml.tar ..")
+    os.system(f"cd  {files_dir};tar -cPvf result_xml.tar *; mv result_xml.tar ..")
     res_xml = os.path.join(path, f"tmp/data_set_file/result_xml.tar")
-    os.system("rm -rf files_dir")
+    os.system(f"rm -rf {files_dir}")
     response = Response(send_file(res_xml), content_type='application/octet-stream')
     response.headers["Content-disposition"] = 'attachment; filename=result_xml.tar'
     return response
@@ -184,5 +183,11 @@ def data_set_clean_env():
     res_datas = request.values
     port = res_datas.get("port")
     files_dir = res_datas("files_dir")
+    cmd = "docker ps|grep %s|awk '{print $1}'"%port
+    status, container_id = sdk_subprocess(cmd)
 
+    os.system(f"docker stop {container_id}")
+    # 删除 运行文件
+    os.system(f"rm -rf {files_dir}")
+    return jsonify(errno=RET.OK, errmsg="环境清理成功")
     
