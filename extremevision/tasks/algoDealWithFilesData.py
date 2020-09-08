@@ -12,15 +12,18 @@ import os
 import requests
 import chardet
 import re
+import time
 from xml.etree.ElementTree import parse
 
-from extremevision.sdk_config import request_host
-
+from extremevision.sdk_config import request_host, request_host_without_port
+error_files_list = defaultdict(list)
 
 @celery.task(bind=True)
-def deal_with_files_data(self, file_name, files_dir, port, error_files_list, file_suffix, tag_suffix, tag_kinds):
+def deal_with_files_data(self, file_name, files_dir, port, file_suffix, tag_suffix, tag_kinds):
     # 解压
     os.system(f"unzip {file_name} -d {files_dir}")
+    # 删除文件
+    os.system(f"rm -f {file_name}")
     total_files = iter_files(files_dir)
 
     # 封装ias 启动算法
@@ -32,7 +35,7 @@ def deal_with_files_data(self, file_name, files_dir, port, error_files_list, fil
     res = requests.post(url, data=data).json().get("errno")
     if res != "0":
         return jsonify(error=RET.ALGOVERSIONERR, errmsg="封装ias失败")
-
+   
     # 遍历
     # 验证文件和标签数据是否一致  判断文集和标签是否以指定文件后缀统一格式
     files_tag = total_files["files_tag"]
@@ -41,32 +44,31 @@ def deal_with_files_data(self, file_name, files_dir, port, error_files_list, fil
         # 判断文件和标注文件命名是否匹配
         if file_tag.split(".")[0] != file.split(".")[0]:
             error_files_list["filename_not_match"].append(file)
-        self.update_state(state='PROGRESS', meta={'current': 1, 'total': 10, 'status': 10})
         # 判断是否是以否以指定后缀命名
         if not file.endswith(file_suffix):
             error_files_list["image"].append(file)
-        if not file_tag.endwith(tag_suffix):
+        if not file_tag.endswith(tag_suffix):
             error_files_list["tag"].append(file_tag)
-        self.update_state(state='PROGRESS', meta={'current': 2, 'total': 10, 'status': 20})
         # 处理xml标签中存在小数点, 更正小数点为正数, 以及判断是否存在多余的标签, 并且删除掉
-        if file_tag.endwith("xml"):
-            get_xml_res(file_tag, tag_kinds, error_files_list)
-        self.update_state(state='PROGRESS', meta={'current': 3, 'total': 10, 'status': 30})
-        # 判断xml类型是不是ascii
         files_tag_dir = os.path.join(files_dir, file_tag)
+        if file_tag.endswith("xml"):
+            get_xml_res(files_tag_dir, tag_kinds)
+        # 判断xml类型是不是ascii
         with open(files_tag_dir, 'rb') as f:
             data = f.read()
             if chardet.detect(data).get("encoding") != 'ascii':
                 error_files_list["tag_file_not_ascii"].append(file_tag)
-        self.update_state(state='PROGRESS', meta={'current': 4, 'total': 10, 'status': 40})
         # 判断命名是否存在中文
         pattern = re.compile(u"[\u4e00-\u9fa5]+")
         result = re.findall(pattern, file)
         if result:
             error_files_list["file_contains_chinese"].append(file)
-        self.update_state(state='PROGRESS', meta={'current': 5, 'total': 10, 'status': 50})
+    self.update_state(state='PROGRESS', meta={'current': 4, 'total': 10, 'status': 40})
     # 通过算法运行判断图片是否能正常运行
     files = total_files["files_dir"]
+    url = request_host_without_port + ":" + str(port) + "/api/analysisImage"
+    time.sleep(5)
+    print(url)
     for file in files:
         filename = file.split("/")[-1]
         data = {
@@ -77,21 +79,20 @@ def deal_with_files_data(self, file_name, files_dir, port, error_files_list, fil
         except Exception as e:
             error_files_list["file_cant_open"].append(filename)
     self.update_state(state='PROGRESS', meta={'current': 9, 'total': 10, 'status': 90})
-
     # 打包下载结果
-    with open(os.path.join(files_dir, "res.txt"), 'a'):
-        f.write(error_files_list)
+    with open(os.path.join(files_dir, "res.txt"), 'a') as f:
+        f.write(str(error_files_list))
     os.system(f"cd {files_dir};tar -cvf result.tar *")
     result_files = f"{files_dir}/result.tar"
+    return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': result_files, "port":port, "files_dir":files_dir}
 
-    return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': result_files}
 
-
-def get_xml_res(xml, tag_kinds, error_files_list):
+def get_xml_res(xml, tag_kinds):
     """
     获取xml中的类型和坐标  检查是否存在多余标签 检查是否存在数字坐标
     :paramer  传入xml绝对路径 以列表返回每个xml文件内容
     """
+    file = xml.split("/")[-1]
     doc = parse(xml)
     root = doc.getroot()
     res_kinds = doc.iterfind('object/name')
@@ -110,7 +111,7 @@ def get_xml_res(xml, tag_kinds, error_files_list):
         xmax = res_coordinate.find('xmax').text
         if '.' in ymin or '.' in xmin or '.' in ymax or '.' in xmax:
             if xml not in error_files_list["wrong_xml_with_float"]:
-                error_files_list["wrong_xml_with_float"].append(xml)
+                error_files_list["wrong_xml_with_float"].append(file)
 
                 res_coordinates_ymin = root.findall('object/bndbox/ymin')
                 res_coordinates_ymax = root.findall('object/bndbox/ymax')

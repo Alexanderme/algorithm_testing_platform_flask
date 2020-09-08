@@ -17,9 +17,9 @@ import random
 
 from extremevision.tasks.algoDealWithFilesData import deal_with_files_data
 
-error_files_list = defaultdict(dict)
+path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-@api.route('/algo_sdk/image_data_set')
+@api.route('/algo_sdk/image_data_set', methods=["POST"])
 def algo_data_set():
     """
     用于验证图片数据集
@@ -41,13 +41,14 @@ def algo_data_set():
     if not filename.lower().endswith('zip'):
         return jsonify(error=RET.DATAERR, errmsg="上传的视频和文件只支持打包好的zip文件,请重新打包上传")
     random_str = ''.join([each for each in str(uuid.uuid1()).split('-')])
-    files_dir = os.path.join("../tmp/datas_set", random_str)
+    files_dir = os.path.join(f"{path}", "tmp/datas_set/"+random_str)
+    if not os.path.exists(files_dir):
+        os.makedirs(files_dir)
     file_name = os.path.join(files_dir, filename)
     files.save(file_name)
+    task = deal_with_files_data.delay(file_name, files_dir, port, file_suffix, tag_suffix, tag_kinds)
 
-    deal_with_files_data(file_name, files_dir, port, error_files_list, file_suffix, tag_suffix, tag_kinds)
-
-    return jsonify(RET.OK, errmsg="数据集检测中, 请耐心等候")
+    return jsonify(errno=RET.OK, task=task.id)
 
 @api.route('/algo_sdk/format_xml', methods=['POST'])
 def format_xml():
@@ -75,13 +76,16 @@ def format_xml():
     if not filename.lower().endswith('zip'):
         return jsonify(error=RET.DATAERR, errmsg="上传的图片和xml文件请打包zip格式上传")
 
-    EXTREMEVISION_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-    files_dir = os.path.join(EXTREMEVISION_DIR, "tmp/data_set_file")
+    random_str = ''.join([each for each in str(uuid.uuid1()).split('-')])
+    files_dir = os.path.join(path, f"tmp/data_set_file/{random_str}")
+    if not os.path.exists(files_dir):
+        os.makedirs(files_dir)
     file_name = os.path.join(files_dir, filename)
     secure_filename(filename)
     xml_file.save(file_name)
     os.system(f"unzip {file_name} -d {files_dir}")
-    os.system(f"rm -y file_name")
+    os.system(f"rm -rf file_name")
+    print("rm -rf file_name")
 
     xml_files = iter_files(files_dir)
     for xml in xml_files:
@@ -91,10 +95,9 @@ def format_xml():
         root = prettyXml(root, indent, newline, level)  # 执行美化方法
         tree = ElementTree.ElementTree(root)  # 转换为可保存的结构
         tree.write(xml)  # 保存美化后的结果
-
-    os.system(f"cd  {files_dir};tar -cvf result_xml.tar {files_dir}")
-    res_xml = os.path.join(files_dir, "result_xml.tar")
-
+    os.system(f"cd  {files_dir};tar -cvf result_xml.tar {files_dir}; mv result_xml.tar ..")
+    res_xml = os.path.join(path, f"tmp/data_set_file/result_xml.tar")
+    os.system("rm -rf files_dir")
     response = Response(send_file(res_xml), content_type='application/octet-stream')
     response.headers["Content-disposition"] = 'attachment; filename=result_xml.tar'
     return response
@@ -142,3 +145,44 @@ def prettyXml(element, indent, newline, level=0):  # elemnt为传进来的Elment
             subelement.tail = newline + indent * level
         prettyXml(subelement, indent, newline, level=level + 1)  # 对子元素进行递归操作
     return element
+
+
+
+@api.route('/algo_sdk/data_set_taskstatus', methods=["GET"])
+def data_set_taskstatus():
+    res_datas = request.values
+    task_id = res_datas.get('task_id')
+    # 根据taskid 获取任务状态
+    task = deal_with_files_data.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': str(task.info),
+        }
+    return jsonify(response)
+
+@api.route('/algo_sdk/data_set_clean_env', methods=["post"])
+def data_set_clean_env():
+    res_datas = request.values
+    port = res_datas.get("port")
+    files_dir = res_datas("files_dir")
+
+    

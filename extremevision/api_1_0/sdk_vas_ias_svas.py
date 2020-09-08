@@ -20,10 +20,10 @@ def deal_with_ias():
     :return:
     """
     res_datas = request.values
-    port = int(res_datas.get('port'))
+    port = res_datas.get('port')
+    port = int(port)
     image_name = res_datas.get('image_name')
 
-    print("--------------------------", port)
     # 获取到容器id
     cmd = run_sdk_config_GPU + f"-p {port}:80 {image_name}"
     status, res = sdk_subprocess(cmd)

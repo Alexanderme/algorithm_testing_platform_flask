@@ -66,7 +66,8 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
         file_dir, video = os.path.split(video_dir)
         # 结果文件路径
         res_file_dir = file_dir.replace(f"ori_{random_str}", f"res_{random_str}")
-        os.makedirs(res_file_dir)
+        if not os.path.exists(res_file_dir):
+            os.makedirs(res_file_dir)
         res_file_name = os.path.join(res_file_dir, video)
         # 调用IAS
         data = {
