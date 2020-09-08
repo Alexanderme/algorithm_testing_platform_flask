@@ -88,6 +88,11 @@ def taskstatus():
         }
         if 'result' in task.info:
             response['result'] = task.info['result']
+            response['error_files'] = task.info['error_files']
+            response['ori_files_dir'] = task.info['ori_files_dir']
+            response['res_files_dir'] = task.info['res_files_dir']
+            response['container_id'] = task.info['container_id']
+     
     else:
         response = {
             'state': task.state,
@@ -96,6 +101,23 @@ def taskstatus():
             'status': str(task.info),
         }
     return jsonify(response)
+
+
+@api.route('/algo_sdk/clear_env', methods=["POST"])
+def clean_env():
+    res_datas = request.values
+    container_id = res_datas.get("container_id")
+    ori_files_dir = res_datas.get("ori_files_dir")
+    res_files_dir = res_datas.get("res_files_dir")
+
+    print("container_id", container_id)
+    if not all([container_id, ori_files_dir, res_files_dir]):
+        return jsonify(error=RET.DATAERR, errmsg=container_id)
+    os.system(f"docker stop {container_id}")
+    # 删除 运行文件
+    os.system(f"rm -rf {ori_files_dir}")
+    os.system(f"rm -rf {res_files_dir}")
+    return jsonify(errno=RET.OK, errmsg="环境清理成功")
 
 
 @api.route('/algo_sdk/get_results', methods=["POST"])
