@@ -66,10 +66,6 @@ def get_files_result():
 
     task = run_files.delay(files_dir, port, tag_names, iou, args, alert_info)
 
-
-    clear_dirs()
-    contain_stop = "docker ps |grep %s|awk '{print $1}'|xargs docker stop" % port
-    status, _ = sdk_subprocess(contain_stop)
     return jsonify(errno=RET.OK, task_id=task.id)
 
 

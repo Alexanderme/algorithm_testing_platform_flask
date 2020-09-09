@@ -59,6 +59,9 @@ def run_files(self, rootDir, port, names, iou, args, alert_info):
     with open(file_res, 'r') as f:
         res = f.read().splitlines()
         res = str(res).replace("'',", "\n")
+    clear_dirs()
+    contain_stop = "docker ps |grep %s|awk '{print $1}'|xargs docker stop" % port
+    status, _ = sdk_subprocess(contain_stop)
     return {'current': 100, 'total': 100, 'status': 'Task completed!', "res": res}
 
 def iter_files(rootDir):
