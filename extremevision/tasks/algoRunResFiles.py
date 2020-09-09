@@ -13,6 +13,7 @@ import requests
 import base64
 import time
 
+
 @celery.task(bind=True)
 def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, random_str):
     """
@@ -84,20 +85,21 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
     # 打包下载结果
     os.system(f"cd {res_files_dir};tar -cvf result.tar *")
     store_path = f"{res_files_dir}/result.tar"
-    cmd = "docker ps|grep %s|awk '{print $1}'"%port
+    cmd = "docker ps|grep %s|awk '{print $1}'" % port
     status, container_id = sdk_subprocess(cmd)
 
-    return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': store_path, "error_files": err_files, "ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
+    return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': store_path, "error_files": err_files,
+            "ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
 
 
 def ias_interface(url, data, res_file_name, port, res_file_dir_txt):
     # 因为要等待封装成功需要休眠一段时间  后面使用其他判断封装是否成功直接调用 改变这个sleep方式
-    cmd = "docker ps|grep %s|awk '{print $1}'"%port
+    cmd = "docker ps|grep %s|awk '{print $1}'" % port
     status, res = sdk_subprocess(cmd)
-    cmd = "docker top %s |grep ias_start_container.sh|awk '{print $1}'"%res
+    cmd = "docker top %s |grep ias_start_container.sh|awk '{print $1}'" % res
     status, res = sdk_subprocess(cmd)
     while res != "root":
-        status, res = sdk_subprocess(cmd) 
+        status, res = sdk_subprocess(cmd)
     time.sleep(3)
     res_base64 = requests.post(url, files=data).json()
     res = res_base64.get('buffer')
@@ -105,8 +107,10 @@ def ias_interface(url, data, res_file_name, port, res_file_dir_txt):
     res = base64.decodebytes(res.encode('ascii'))
     with open(res_file_name, 'wb') as f:
         f.write(res)
+    res_file_name = res_file_name.split('/')[-1]
     with open(res_file_dir_txt, 'a') as f:
-        f.write(algo_res_json)
+        f.write(str(res_file_name) + '\n')
+        f.write(str(algo_res_json) + '\n')
 
 
 def iter_files(rootDir):
@@ -129,6 +133,3 @@ def iter_files(rootDir):
             iter_files(dir)
 
     return filenames
-
-
-

@@ -17,14 +17,11 @@ def get_used():
     status, mem_total = sdk_subprocess(mem_total)
     if not status:
         errmsg['mem_total'] = mem_total
-
-
     # 获取总的GPU占用  现在只支持查看单张看  多张卡记录 需要舒勇"nvidia-smi |grep Default|awk '{print $11}'"
     gpu_total = "nvidia-smi |grep Default|awk 'NR==1 {print $11}'"
     status, gpu_total = sdk_subprocess(gpu_total)
     if not status:
         errmsg['gpu_total'] = gpu_total
-
 
     # 获取GPU使用
     gpu_used = "nvidia-smi |grep Default|awk 'NR==1 {print $9}'"
@@ -54,7 +51,7 @@ def get_used():
     cpu_min = min(cpu_list)
     cpu_max = max(cpu_list)
     # 获取内存占用
-    cmd = "top -n 1 -p %s|grep test|awk '{print $11}'"%pid_test_ji_api
+    cmd = "top -n 1 -p %s|grep test|awk '{print $11}'" % pid_test_ji_api
     status,  mem_used = sdk_subprocess(cmd)
     if not status:
         errmsg['mem_used'] = mem_used
@@ -70,9 +67,6 @@ def get_used():
     with open("/tmp/res_used.txt", 'w', encoding='utf-8') as f:
         f.write(f"当前服务器CPU核数:{cpu_total}, 内存大小:{mem_total}MiB, 显存大小:{gpu_total}\n")
         f.write(f"算法运行资源占用:CPU占用区间{cpu_min}~{cpu_max}, MEM:{mem_used}, GPU:{gpu_used}")
-
-
-
 
 def sdk_subprocess(cmd):
     """

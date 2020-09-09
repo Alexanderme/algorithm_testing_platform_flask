@@ -11,9 +11,11 @@ from extremevision.utils.response_codes import RET
 from werkzeug.utils import secure_filename
 from extremevision.utils.sdk_precision.run import iter_files, clear_dirs
 from extremevision.api_1_0.sdk_subprocess import sdk_subprocess
-import zipfile
+from extremevision.utils.sdk_precision.run import run_files
 import os
+import uuid
 
+path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 @api.route('/algo_sdk/get_files_result', methods=["POST"])
 def get_files_result():
@@ -40,34 +42,55 @@ def get_files_result():
     if not filename.lower().endswith('zip'):
         return jsonify(error=RET.DATAERR, errmsg="上传的图片和xml文件请打包zip格式上传")
 
-    EXTREMEVISION_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-    files_dir = os.path.join(EXTREMEVISION_DIR, "utils/sdk_precision/input/files").replace("\\", "/")
-    file_name = os.path.join(files_dir, filename).replace("\\", "/")
+    random_str = ''.join([each for each in str(uuid.uuid1()).split('-')])
+    files_dir = os.path.join(path, f"tmp/algo_miss_rate/{random_str}")
+    file_name = os.path.join(files_dir, filename)
     secure_filename(filename)
     file.save(file_name)
-    with zipfile.ZipFile(file_name, 'r') as f:
-        f.extractall(files_dir)
+
+    os.system(f"unzip {file_name} -d {files_dir}")
+    os.system(f"rm -rf {file_name}")
 
     if alert_info is None:
-        iter_files(files_dir, port, tag_names)
+        task = run_files.delay(files_dir, port, tag_names, iou)
     else:
-        iter_files(files_dir, port, tag_names, alert_info)
-    files_dir = os.path.join(EXTREMEVISION_DIR, "utils/sdk_precision/main.py")
-    if iou is None:
-        cmd = f"python3 {files_dir}"
-    else:
-        cmd = f"python3 {files_dir} -t {iou}"
+        task = run_files.delay(files_dir, port, tag_names, iou, alert_info)
 
-    os.system(cmd)
-
-    file_res = os.path.join(EXTREMEVISION_DIR, "utils/sdk_precision/output/output.txt")
-    with open(file_res, 'r') as f:
-        res = f.read().splitlines()
-        res = str(res).replace("'',", "\n")
     
     clear_dirs()
-    contain_stop = "docker ps |grep %s|awk '{print $1}'|xargs docker stop"%port
+    contain_stop = "docker ps |grep %s|awk '{print $1}'|xargs docker stop" % port
     status, _ = sdk_subprocess(contain_stop)
-    if not status:
-        return jsonify(errno=RET.DATAERR, msg=res)
-    return jsonify(errno=RET.OK, errmsg=str(res))
+    return jsonify(errno=RET.OK, task_id=task.id)
+
+
+@api.route('/algo_sdk/rate_taskstatus', methods=["GET"])
+def rate_taskstatus():
+    res_datas = request.values
+    task_id = res_datas.get('task_id')
+    # 根据taskid 获取任务状态
+    task = run_files.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+            response['res'] = task.info['res']
+    else:
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': str(task.info),
+        }
+    return jsonify(response)

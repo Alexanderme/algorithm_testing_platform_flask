@@ -69,7 +69,6 @@ def deal_with_files_data(self, file_name, files_dir, port, file_suffix, tag_suff
     files = total_files["files_dir"]
     url = request_host_without_port + ":" + str(port) + "/api/analysisImage"
     time.sleep(5)
-    print(url)
     for file in files:
         filename = file.split("/")[-1]
         data = {

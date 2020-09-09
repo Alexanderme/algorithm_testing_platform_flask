@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
 import os
 import requests
-import time
+
 import shutil
+from collections import defaultdict
+
+from extremevision import celery
 
 BASE_DIR = os.path.dirname(os.path.abspath(os.path.abspath(__file__)))
 RES_DIR = os.path.abspath(os.path.join(os.path.abspath(BASE_DIR), "input"))
@@ -30,20 +33,66 @@ def clear_dirs():
     os.makedirs(files)
 
 
-def iter_files(rootDir, port, names, alert_info="alert_info", host="127.0.0.1"):
+# def iter_files(rootDir, port, names, alert_info="alert_info", host="127.0.0.1"):
+#     for root, dirs, files in os.walk(rootDir):
+#         for file in files:
+#             if file.lower().endswith('xml'):
+#                 xml_create(file, root)
+#             if file.lower().endswith('jpg') or file.lower().endswith('png') or file.lower().endswith('jpeg'):
+#                 txt_create(file, root, host, port, names, alert_info)
+#         for dir in dirs:
+#             iter_files(dir, port, names, alert_info="alert_info", host="127.0.0.1")
+
+@celery.task(bind=True)
+def run_files(self, rootDir, port, names, iou, alert_info="alert_info", host="127.0.0.1"):
+    filenames = iter_files(rootDir)
+    xmls = filenames["xml"]
+    files = filenames["files"]
+    total_files = len(files)
+    file_count = 0
+    for xml in xmls:
+        xml_create(xml)
+    for file in files:
+        file_count += 1
+        txt_create(file, host, port, names, alert_info)
+        process = int(file_count/total_files*100)
+        self.update_state(state='PROGRESS', meta={'current': file_count, 'total': total_files, 'status': process})
+    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    main = os.path.join(path, "utils/sdk_precision/main.py")
+    if iou is None:
+        cmd = f"python3 {main}"
+    else:
+        cmd = f"python3 {main} -t {iou}"
+    os.system(cmd)
+    file_res = os.path.join(rootDir, f"output.txt")
+    with open(file_res, 'r') as f:
+        res = f.read().splitlines()
+        res = str(res).replace("'',", "\n")
+    return {'current': 100, 'total': 100, 'status': 'Task completed!', "res": res}
+
+def iter_files(rootDir):
+    """
+    根据文件路径 返回文件名称 以及文件路径名称
+    :param rootDir:
+    :return:
+    """
+    filenames = defaultdict(list)
     for root, dirs, files in os.walk(rootDir):
         for file in files:
+            file = os.path.join(root, file)
             if file.lower().endswith('xml'):
-                xml_create(file, root)
-            if file.lower().endswith('jpg') or file.lower().endswith('png') or file.lower().endswith('jpeg'):
-                txt_create(file, root, host, port, names, alert_info)
+                filenames["xmls"].append(file)
+            if file.lower().endswith('jpg') or file.lower().endswith('png'):
+                filenames["files"].append(file)
         for dir in dirs:
-            iter_files(dir, port, names, alert_info="alert_info", host="127.0.0.1")
+            iter_files(dir)
+
+    return filenames
 
 
-def xml_create(file, root):
-    name_txt = file.split('.')[0] + ".txt"
-    with open(os.path.join(root, file), "rb") as f:
+def xml_create(file):
+    name_txt = file.split('/')[-1].split('/')[0] + ".txt"
+    with open(file, "rb") as f:
         file_b = f.read()
     soup = BeautifulSoup(file_b, 'lxml')
     object_all = soup.find_all("object")
@@ -59,23 +108,22 @@ def xml_create(file, root):
                     "%s %s %s %s %s\n" % (name, int(float(xmin)), int(float(ymin)), int(float(xmax)), int(float(ymax))))
 
 
-def txt_create(file, root, host, port, names, alert_info="alert_info"):
+def txt_create(file, host, port, names, alert_info="alert_info"):
     url_dir = "/api/analysisImage"
     url = "http://" + host + ":" + str(port) + url_dir
-    with open(os.path.join(root, file), "rb") as f:
+    with open(file, "rb") as f:
         fb = f.read()
     data = {
         "image": fb
     }
     response = requests.post(url, files=data)
     res_index = response.json().get("result").get(alert_info)
+    name_txt = file.split('/')[-1].split('/')[0] + ".txt"
     if res_index is None or res_index == [] or res_index == 'null' or res_index == 'Null' or res_index == 'NULL':
-        name_txt = file.split('.')[0] + ".txt"
         with open(os.path.join(res_txt_path, name_txt), "a") as f:
             f.write("\n")
         return
     for res in res_index:
-        name_txt = file.split('.')[0] + ".txt"
         if res.get('confidence') is not None:
             confidence = res.get('confidence')
         else:

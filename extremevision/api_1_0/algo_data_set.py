@@ -189,4 +189,3 @@ def data_set_clean_env():
     # 删除 运行文件
     os.system(f"rm -rf {files_dir}")
     return jsonify(errno=RET.OK, errmsg="环境清理成功")
-    
