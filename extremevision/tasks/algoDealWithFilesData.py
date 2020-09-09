@@ -14,6 +14,7 @@ import chardet
 import re
 import time
 from xml.etree.ElementTree import parse
+from extremevision.api_1_0.sdk_subprocess import sdk_subprocess
 
 from extremevision.sdk_config import request_host, request_host_without_port
 error_files_list = defaultdict(list)
@@ -84,7 +85,10 @@ def deal_with_files_data(self, file_name, files_dir, port, file_suffix, tag_suff
         f.write(str(error_files_list))
     os.system(f"cd {files_dir};tar -cvf result.tar *")
     result_files = f"{files_dir}/result.tar"
-    return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': result_files, "port":port, "files_dir":files_dir}
+    cmd = "docker ps|grep %s|awk '{print $1}'"%port
+    status, container_id = sdk_subprocess(cmd)
+
+    return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': result_files, "container_id":container_id, "files_dir":files_dir}
 
 
 def get_xml_res(xml, tag_kinds):

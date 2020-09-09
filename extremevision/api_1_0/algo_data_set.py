@@ -48,7 +48,7 @@ def algo_data_set():
     files.save(file_name)
     task = deal_with_files_data.delay(file_name, files_dir, port, file_suffix, tag_suffix, tag_kinds)
 
-    return jsonify(errno=RET.OK, task=task.id)
+    return jsonify(errno=RET.OK, task_id=task.id)
 
 @api.route('/algo_sdk/format_xml', methods=['POST'])
 def format_xml():
@@ -169,6 +169,8 @@ def data_set_taskstatus():
         }
         if 'result' in task.info:
             response['result'] = task.info['result']
+            response['container_id'] = task.info['container_id']
+            response['files_dir'] = task.info['files_dir']
     else:
         response = {
             'state': task.state,
@@ -181,11 +183,8 @@ def data_set_taskstatus():
 @api.route('/algo_sdk/data_set_clean_env', methods=["post"])
 def data_set_clean_env():
     res_datas = request.values
-    port = res_datas.get("port")
-    files_dir = res_datas("files_dir")
-    cmd = "docker ps|grep %s|awk '{print $1}'"%port
-    status, container_id = sdk_subprocess(cmd)
-
+    container_id = res_datas.get("container_id")
+    files_dir = res_datas.get("files_dir")
     os.system(f"docker stop {container_id}")
     # 删除 运行文件
     os.system(f"rm -rf {files_dir}")
