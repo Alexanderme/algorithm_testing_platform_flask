@@ -9,6 +9,7 @@ import time
 import base64
 from extremevision.sdk_config import request_host_without_port
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(os.path.abspath(__file__)))
 RES_DIR = os.path.abspath(os.path.join(os.path.abspath(BASE_DIR), "input"))
 
@@ -37,32 +38,35 @@ def clear_dirs():
 @celery.task(bind=True)
 def run_files(self, rootDir, port, names, iou, args, alert_info):
     filenames = iter_files(rootDir)
-    xmls = filenames["xml"]
+    xmls = filenames["xmls"]
     files = filenames["files"]
     total_files = len(files)
     file_count = 0
+    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     for xml in xmls:
-        xml_create(xml)
+        xml_create(xml, path)
     for file in files:
         file_count += 1
         txt_create(file, port, names, args, alert_info)
         process = int(file_count/total_files*100)
         self.update_state(state='PROGRESS', meta={'current': file_count, 'total': total_files, 'status': process})
-    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     main = os.path.join(path, "utils/sdk_precision/main.py")
     if iou is None:
         cmd = f"python3 {main}"
     else:
         cmd = f"python3 {main} -t {iou}"
     os.system(cmd)
-    file_res = os.path.join(rootDir, f"output.txt")
+    
+    file_res = os.path.join(path, f"utils/sdk_precision/output/output.txt")
     with open(file_res, 'r') as f:
         res = f.read().splitlines()
         res = str(res).replace("'',", "\n")
     clear_dirs()
     contain_stop = "docker ps |grep %s|awk '{print $1}'|xargs docker stop" % port
     status, _ = sdk_subprocess(contain_stop)
-    return {'current': 100, 'total': 100, 'status': 'Task completed!', "res": res}
+    print(rootDir, "rootDir")
+    os.system(f"rm -rf {rootDir}")
+    return {'current': 100, 'total': 100, 'status': 'Task completed!', "result": res}
 
 def iter_files(rootDir):
     """
@@ -84,8 +88,10 @@ def iter_files(rootDir):
     return filenames
 
 
-def xml_create(file):
-    name_txt = file.split('/')[-1].split('/')[0] + ".txt"
+def xml_create(file, path):
+    root = os.path.join(path, "utils/sdk_precision/input/ground-truth")
+    name_txt = file.split('/')[-1].split('.')[0] + ".txt"
+    print("xml_create", name_txt)
     with open(file, "rb") as f:
         file_b = f.read()
     soup = BeautifulSoup(file_b, 'lxml')
@@ -97,7 +103,7 @@ def xml_create(file):
             ymin = m.find_all("ymin")[0].string
             xmax = m.find_all("xmax")[0].string
             ymax = m.find_all("ymax")[0].string
-            with open(os.path.join(res_xml_path, name_txt), "a") as f:
+            with open(os.path.join(root, name_txt), "a") as f:
                 f.write(
                     "%s %s %s %s %s\n" % (name, int(float(xmin)), int(float(ymin)), int(float(xmax)), int(float(ymax))))
 
@@ -109,11 +115,12 @@ def txt_create(file, port, names, args, alert_info):
         'image': (image, open(file, 'rb')),
         "args": args
     }
+    time.sleep(5)
     response = requests.post(url, files=data)
     if alert_info is None:
         alert_info = "alert_info"
     res_index = response.json().get("result").get(alert_info)
-    name_txt = file.split('/')[-1].split('/')[0] + ".txt"
+    name_txt = file.split('/')[-1].split('.')[0] + ".txt"
     if res_index is None or res_index == [] or res_index == 'null' or res_index == 'Null' or res_index == 'NULL':
         with open(os.path.join(res_txt_path, name_txt), "a") as f:
             f.write("\n")

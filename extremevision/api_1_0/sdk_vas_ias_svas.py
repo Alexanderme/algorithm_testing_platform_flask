@@ -27,7 +27,7 @@ def deal_with_ias():
     # 获取到容器id
     cmd = run_sdk_config_GPU + f"-p {port}:80 {image_name}"
     status, res = sdk_subprocess(cmd)
-    print(cmd, "res")
+    print(res, "res")
     if status:
         contain_id = res[:12]
     elif "port is already" in res:

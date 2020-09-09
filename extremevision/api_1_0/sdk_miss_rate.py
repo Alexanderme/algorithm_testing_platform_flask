@@ -47,6 +47,8 @@ def get_files_result():
 
     random_str = ''.join([each for each in str(uuid.uuid1()).split('-')])
     files_dir = os.path.join(path, f"tmp/algo_miss_rate/{random_str}")
+    if not os.path.exists(files_dir):
+        os.makedirs(files_dir)
     file_name = os.path.join(files_dir, filename)
     secure_filename(filename)
     files.save(file_name)
@@ -91,7 +93,6 @@ def rate_taskstatus():
         }
         if 'result' in task.info:
             response['result'] = task.info['result']
-            response['res'] = task.info['res']
     else:
         response = {
             'state': task.state,
