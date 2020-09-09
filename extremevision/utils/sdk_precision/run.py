@@ -1,11 +1,13 @@
 from bs4 import BeautifulSoup
 import os
 import requests
-
 import shutil
 from collections import defaultdict
-
 from extremevision import celery
+from extremevision.api_1_0.sdk_subprocess import sdk_subprocess
+import time
+import base64
+from extremevision.sdk_config import request_host_without_port
 
 BASE_DIR = os.path.dirname(os.path.abspath(os.path.abspath(__file__)))
 RES_DIR = os.path.abspath(os.path.join(os.path.abspath(BASE_DIR), "input"))
@@ -32,19 +34,8 @@ def clear_dirs():
     os.makedirs(ground_truth)
     os.makedirs(files)
 
-
-# def iter_files(rootDir, port, names, alert_info="alert_info", host="127.0.0.1"):
-#     for root, dirs, files in os.walk(rootDir):
-#         for file in files:
-#             if file.lower().endswith('xml'):
-#                 xml_create(file, root)
-#             if file.lower().endswith('jpg') or file.lower().endswith('png') or file.lower().endswith('jpeg'):
-#                 txt_create(file, root, host, port, names, alert_info)
-#         for dir in dirs:
-#             iter_files(dir, port, names, alert_info="alert_info", host="127.0.0.1")
-
 @celery.task(bind=True)
-def run_files(self, rootDir, port, names, iou, alert_info="alert_info", host="127.0.0.1"):
+def run_files(self, rootDir, port, names, iou, args, alert_info):
     filenames = iter_files(rootDir)
     xmls = filenames["xml"]
     files = filenames["files"]
@@ -54,7 +45,7 @@ def run_files(self, rootDir, port, names, iou, alert_info="alert_info", host="12
         xml_create(xml)
     for file in files:
         file_count += 1
-        txt_create(file, host, port, names, alert_info)
+        txt_create(file, port, names, args, alert_info)
         process = int(file_count/total_files*100)
         self.update_state(state='PROGRESS', meta={'current': file_count, 'total': total_files, 'status': process})
     path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -108,15 +99,16 @@ def xml_create(file):
                     "%s %s %s %s %s\n" % (name, int(float(xmin)), int(float(ymin)), int(float(xmax)), int(float(ymax))))
 
 
-def txt_create(file, host, port, names, alert_info="alert_info"):
-    url_dir = "/api/analysisImage"
-    url = "http://" + host + ":" + str(port) + url_dir
-    with open(file, "rb") as f:
-        fb = f.read()
+def txt_create(file, port, names, args, alert_info):
+    url = request_host_without_port + ":" + str(port) + "/api/analysisImage"
+    image = file.split('/')[-1]
     data = {
-        "image": fb
+        'image': (image, open(file, 'rb')),
+        "args": args
     }
     response = requests.post(url, files=data)
+    if alert_info is None:
+        alert_info = "alert_info"
     res_index = response.json().get("result").get(alert_info)
     name_txt = file.split('/')[-1].split('/')[0] + ".txt"
     if res_index is None or res_index == [] or res_index == 'null' or res_index == 'Null' or res_index == 'NULL':

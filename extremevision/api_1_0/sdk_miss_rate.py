@@ -9,11 +9,12 @@ from . import api
 from flask import jsonify, request
 from extremevision.utils.response_codes import RET
 from werkzeug.utils import secure_filename
-from extremevision.utils.sdk_precision.run import iter_files, clear_dirs
+from extremevision.utils.sdk_precision.run import clear_dirs, run_files
 from extremevision.api_1_0.sdk_subprocess import sdk_subprocess
-from extremevision.utils.sdk_precision.run import run_files
+from extremevision.sdk_config import request_host
 import os
 import uuid
+import requests
 
 path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
@@ -24,12 +25,14 @@ def get_files_result():
     :return:
     """
     res_datas = request.values
-    file = request.files.get("files")
+    files = request.files.get("files")
     tag_names = res_datas.get('tag_names')
     alert_info = res_datas.get('alert_info')
     port = res_datas.get('port')
+    iou = res_datas.get('iou')
+    image_name = res_datas.get("image_name")
+    args = res_datas.get("args")
     tag_names = tag_names.split(",")
-    iou = res_datas.get('iou')   
 
     if not all([tag_names, port, iou, alert_info]):
         return jsonify(error=RET.DATAERR, errmsg="传入数据不完整")
@@ -38,7 +41,7 @@ def get_files_result():
         if float(iou) > 1 or float(iou) < 0 :
            return jsonify(error=RET.DATAERR, errmsg="请传入正确的iou")
 
-    filename = file.filename
+    filename = files.filename
     if not filename.lower().endswith('zip'):
         return jsonify(error=RET.DATAERR, errmsg="上传的图片和xml文件请打包zip格式上传")
 
@@ -46,17 +49,24 @@ def get_files_result():
     files_dir = os.path.join(path, f"tmp/algo_miss_rate/{random_str}")
     file_name = os.path.join(files_dir, filename)
     secure_filename(filename)
-    file.save(file_name)
+    files.save(file_name)
 
     os.system(f"unzip {file_name} -d {files_dir}")
     os.system(f"rm -rf {file_name}")
 
-    if alert_info is None:
-        task = run_files.delay(files_dir, port, tag_names, iou)
-    else:
-        task = run_files.delay(files_dir, port, tag_names, iou, alert_info)
+    # 封装ias 启动算法
+    url = request_host + "/api/v1.0/algo_sdk/package_ias"
+    data = {
+        "port": port,
+        "image_name": image_name
+    }
+    res = requests.post(url, data=data).json().get("errno")
+    if res != "0":
+        return jsonify(error=RET.ALGOVERSIONERR, errmsg="封装ias失败")
 
-    
+    task = run_files.delay(files_dir, port, tag_names, iou, args, alert_info)
+
+
     clear_dirs()
     contain_stop = "docker ps |grep %s|awk '{print $1}'|xargs docker stop" % port
     status, _ = sdk_subprocess(contain_stop)

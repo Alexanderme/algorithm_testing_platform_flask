@@ -10,7 +10,6 @@ from flask import request, jsonify, Response
 from xml.etree import ElementTree
 from extremevision.utils.response_codes import RET
 from werkzeug.utils import secure_filename
-from collections import defaultdict
 import uuid
 import os
 import random
