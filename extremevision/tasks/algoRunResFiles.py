@@ -30,10 +30,8 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
     # 解压文件
     os.system(f"unzip {file_name} -d {ori_files_dir}")
     os.system(f"rm -f {file_name}")
-
     # 调用ias, image , video
     filesname = iter_files(ori_files_dir)
-    print(filesname, "filesname")
     # 获取文件全路径列表
     images_dir = filesname["image_dir"]
     videos_dir = filesname["video_dir"]
@@ -41,6 +39,10 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
 
     file_nums = len(images_dir) + len(videos_dir) - len(err_files)
     res_files_count = 0
+    cmd = "docker ps|grep %s|awk '{print $1}'" % port
+    status, res = sdk_subprocess(cmd)
+    time.sleep(5)
+
 
     for image_dir in images_dir:
         url = request_host_without_port + ":" + str(port) + "/api/analysisImage"
@@ -57,7 +59,16 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
             'image': (image, open(image_dir, 'rb')),
             "args": args
         }
-        ias_interface(url, data, res_file_name, port, res_file_dir_txt)
+        res_base64 = requests.post(url, files=data).json()
+        res = res_base64.get('buffer')
+        algo_res_json = res_base64.get("result")
+        res = base64.decodebytes(res.encode('ascii'))
+        with open(res_file_name, 'wb') as f:
+            f.write(res)
+        res_file_name = res_file_name.split('/')[-1]
+        with open(res_file_dir_txt, 'a') as f:
+            f.write(str(res_file_name) + '\n')
+            f.write(str(algo_res_json) + '\n')
         res_files_count += 1
         process = int((res_files_count / file_nums) * 100)
         self.update_state(state='PROGRESS', meta={'current': res_files_count, 'total': file_nums, 'status': process})
@@ -77,7 +88,16 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
             'video': (video, open(video_dir, 'rb')),
             "args": args
         }
-        ias_interface(url, data, res_file_name, port, res_file_dir_txt)
+        res_base64 = requests.post(url, files=data).json()
+        res = res_base64.get('buffer')
+        algo_res_json = res_base64.get("result")
+        res = base64.decodebytes(res.encode('ascii'))
+        with open(res_file_name, 'wb') as f:
+            f.write(res)
+        res_file_name = res_file_name.split('/')[-1]
+        with open(res_file_dir_txt, 'a') as f:
+            f.write(str(res_file_name) + '\n')
+            f.write(str(algo_res_json) + '\n')
         res_files_count += 1
         process = int((res_files_count / file_nums) * 100)
         self.update_state(state='PROGRESS', meta={'current': res_files_count, 'total': file_nums, 'status': process})
@@ -90,28 +110,6 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
 
     return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': store_path, "error_files": err_files,
             "ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
-
-
-def ias_interface(url, data, res_file_name, port, res_file_dir_txt):
-    # 因为要等待封装成功需要休眠一段时间  后面使用其他判断封装是否成功直接调用 改变这个sleep方式
-    cmd = "docker ps|grep %s|awk '{print $1}'" % port
-    status, res = sdk_subprocess(cmd)
-    cmd = "docker top %s |grep ias_start_container.sh|awk '{print $1}'" % res
-    status, res = sdk_subprocess(cmd)
-    while res != "root":
-        status, res = sdk_subprocess(cmd)
-    time.sleep(3)
-    res_base64 = requests.post(url, files=data).json()
-    res = res_base64.get('buffer')
-    algo_res_json = res_base64.get("result")
-    res = base64.decodebytes(res.encode('ascii'))
-    with open(res_file_name, 'wb') as f:
-        f.write(res)
-    res_file_name = res_file_name.split('/')[-1]
-    with open(res_file_dir_txt, 'a') as f:
-        f.write(str(res_file_name) + '\n')
-        f.write(str(algo_res_json) + '\n')
-
 
 def iter_files(rootDir):
     """

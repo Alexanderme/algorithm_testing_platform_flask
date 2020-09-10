@@ -34,7 +34,7 @@ def get_used():
     cmd = f"nohup /usr/local/ev_sdk/bin/test-ji-api -f 1 -i /tmp/{file}  -l /usr/local/ev_sdk/bin/license.txt -r 100000  > run.log 2>&1 &"
     os.system(cmd)
 
-    time.sleep(5)
+    time.sleep(200)
     # cpu占用需要获取一段时间内的cpu 输出cpu占用区间 默认30秒内cpu跳动
     # 获取cpu 占用
     pid_test_ji_api = str(os.popen("pidof test-ji-api").read().replace('\n', ""))
@@ -62,8 +62,8 @@ def get_used():
     status, gpu_used_after = sdk_subprocess(gpu_used)
     if not status:
         errmsg['gpu_used_after'] = gpu_used_after
-    gpu_used = int(gpu_used_after[:-4]) - int(gpu_used_before[:-4])
-
+    gpu_used = int(gpu_used_after[:-3]) - int(gpu_used_before[:-3])
+    os.system("touch /tmp/res_used.txt")
     with open("/tmp/res_used.txt", 'w', encoding='utf-8') as f:
         f.write(f"当前服务器CPU核数:{cpu_total}, 内存大小:{mem_total}MiB, 显存大小:{gpu_total}\n")
         f.write(f"算法运行资源占用:CPU占用区间{cpu_min}~{cpu_max}, MEM:{mem_used}, GPU:{gpu_used}")

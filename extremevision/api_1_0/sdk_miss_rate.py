@@ -15,6 +15,7 @@ from extremevision.sdk_config import request_host
 import os
 import uuid
 import requests
+import random
 
 path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
@@ -28,16 +29,16 @@ def get_files_result():
     files = request.files.get("files")
     tag_names = res_datas.get('tag_names')
     alert_info = res_datas.get('alert_info')
-    port = res_datas.get('port')
     iou = res_datas.get('iou')
     image_name = res_datas.get("image_name")
     args = res_datas.get("args")
-    tag_names = tag_names.split(",")
 
-    if not all([tag_names, port, iou, alert_info]):
+    tag_names = tag_names.replace(" ", "").split(",")
+    port = random.randint(10000, 65000)
+    if not all([tag_names, image_name, alert_info]):
         return jsonify(error=RET.DATAERR, errmsg="传入数据不完整")
-
-    if iou is not None:
+    
+    if iou != None:
         if float(iou) > 1 or float(iou) < 0 :
            return jsonify(error=RET.DATAERR, errmsg="请传入正确的iou")
 

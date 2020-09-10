@@ -45,6 +45,7 @@ def run_files(self, rootDir, port, names, iou, args, alert_info):
     path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     for xml in xmls:
         xml_create(xml, path)
+    time.sleep(3)
     for file in files:
         file_count += 1
         txt_create(file, port, names, args, alert_info)
@@ -115,7 +116,6 @@ def txt_create(file, port, names, args, alert_info):
         'image': (image, open(file, 'rb')),
         "args": args
     }
-    time.sleep(5)
     response = requests.post(url, files=data)
     if alert_info is None:
         alert_info = "alert_info"

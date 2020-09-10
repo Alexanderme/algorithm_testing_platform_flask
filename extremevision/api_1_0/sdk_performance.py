@@ -19,28 +19,6 @@ import re
 
 path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# @api.route('/algo_sdk/connect_server', methods=['POST'])
-# def connect_server():
-#     res_datas = request.values
-#     server_ip = res_datas.get('server_ip')
-#     server_port = int(res_datas.get('server_port'))
-#     server_user = res_datas.get('server_user')
-#     server_passwd = res_datas.get('server_passwd')
-#
-#     if not all([server_ip, server_port, server_user, server_passwd]):
-#         return jsonify(error=RET.DATAERR, errmsg="传入数据不完整")
-#
-#     if int(server_port) < 0 or int(server_port) > 65000:
-#         return jsonify(error=RET.DATAERR, errmsg="端口填写错误")
-#     global server
-#     server = ParamikoCentos(hostname=server_ip, username=server_user, password=server_passwd, port=server_port)
-#     try:
-#         server.type_login_root()
-#     except Exception as e:
-#         return jsonify(error=RET.SERVERERR, errmsg="连接服务器失败")
-
-
 @api.route('/algo_sdk/resource_occupation', methods=["POST"])
 def sdk_resource_occupation():
     """
@@ -83,15 +61,13 @@ def sdk_resource_occupation():
 
     # 获取到容器id
     contain_id = server.exec_command(run_sdk_config_GPU + f"{image_name}")[:8]
-
     # 执行授权文件, 并且运行算法
     server.exec_command(f"docker exec  {contain_id} bash /tmp/sdk_resource_occupation.sh")
     server.exec_command(f"docker exec  -t  {contain_id} python3 /tmp/get_remote_use.py {filename}")
-    
-    os.system("touch /tmp/ljx/res_used.txt")
-    with open("/tmp/ljx/res_used.txt", 'r') as f:
-        res = f.read().splitlines()
 
+    res = server.exec_command(f"cat /tmp/ljx/res_used.txt") 
+    print(res)
+    server.exec_command(f"docker stop  {contain_id}")
     return jsonify(errno=RET.OK, errmsg=res)
 
 
