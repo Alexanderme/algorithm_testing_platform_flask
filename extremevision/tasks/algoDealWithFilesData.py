@@ -39,9 +39,10 @@ def deal_with_files_data(self, file_name, files_dir, port, file_suffix, tag_suff
    
     # 遍历
     # 验证文件和标签数据是否一致  判断文集和标签是否以指定文件后缀统一格式
-    files_tag = total_files["files_tag"]
+    files_tag_dir = total_files["files_tag_dir"]
     files = total_files["files"]
-    for file_tag, file in zip(files_tag, files):
+    for file_tag_dir, file in zip(files_tag_dir, files):
+        file_tag = file_tag_dir.split("/")[-1]
         # 判断文件和标注文件命名是否匹配
         if file_tag.split(".")[0] != file.split(".")[0]:
             error_files_list["filename_not_match"].append(file)
@@ -51,11 +52,10 @@ def deal_with_files_data(self, file_name, files_dir, port, file_suffix, tag_suff
         if not file_tag.endswith(tag_suffix):
             error_files_list["tag"].append(file_tag)
         # 处理xml标签中存在小数点, 更正小数点为正数, 以及判断是否存在多余的标签, 并且删除掉
-        files_tag_dir = os.path.join(files_dir, file_tag)
         if file_tag.endswith("xml"):
-            get_xml_res(files_tag_dir, tag_kinds)
+            get_xml_res(file_tag_dir, tag_kinds)
         # 判断xml类型是不是ascii
-        with open(files_tag_dir, 'rb') as f:
+        with open(file_tag_dir, 'rb') as f:
             data = f.read()
             if chardet.detect(data).get("encoding") != 'ascii':
                 error_files_list["tag_file_not_ascii"].append(file_tag)
@@ -102,7 +102,7 @@ def get_xml_res(xml, tag_kinds):
     res_coordinates = doc.iterfind('object/bndbox')
     for res_kind in res_kinds:
         if res_kind.text not in tag_kinds:
-            error_files_list["tag_not_in_tag_kinds"].append(xml)
+            error_files_list["tag_not_in_tag_kinds"].append(file)
             tfs = root.findall(f"./object[name='{res_kind.text}']")
             for tf in tfs:
                 root.remove(tf)

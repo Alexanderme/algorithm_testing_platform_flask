@@ -42,7 +42,8 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
     cmd = "docker ps|grep %s|awk '{print $1}'" % port
     status, res = sdk_subprocess(cmd)
     time.sleep(5)
-
+    cmd = "docker ps|grep %s|awk '{print $1}'" % port
+    status, container_id = sdk_subprocess(cmd)
 
     for image_dir in images_dir:
         url = request_host_without_port + ":" + str(port) + "/api/analysisImage"
@@ -59,7 +60,15 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
             'image': (image, open(image_dir, 'rb')),
             "args": args
         }
-        res_base64 = requests.post(url, files=data).json()
+        try:
+            res_base64 = requests.post(url, files=data).json()
+            print(res_base64.get("code")==0)
+            if res_base64.get("code") != 0:
+                return {'current': 100, 'total': 100, 'status': 'faild', 'result': "-1", "error_files": err_files,"ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
+        except Exception as e:
+            res_base64 = {"code":-100}
+            return {'current': 100, 'total': 100, 'status': 'faild', 'result': "-100", "error_files": err_files,
+            "ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
         res = res_base64.get('buffer')
         algo_res_json = res_base64.get("result")
         res = base64.decodebytes(res.encode('ascii'))
@@ -88,7 +97,14 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
             'video': (video, open(video_dir, 'rb')),
             "args": args
         }
-        res_base64 = requests.post(url, files=data).json()
+        try:
+            res_base64 = requests.post(url, files=data).json()
+            if res_base64.get("code") != 0:
+                return {'current': 100, 'total': 100, 'status': 'faild', 'result': "-1", "error_files": err_files,"ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
+        except Exception as e:
+            res_base64 = {"code":-100}
+            return {'current': 100, 'total': 100, 'status': 'faild', 'result': "-100", "error_files": err_files,
+            "ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}
         res = res_base64.get('buffer')
         algo_res_json = res_base64.get("result")
         res = base64.decodebytes(res.encode('ascii'))
@@ -105,8 +121,6 @@ def algo_ias_files(self, ori_files_dir, res_files_dir, file_name, port, args, ra
     # 打包下载结果
     os.system(f"cd {res_files_dir};tar -cvf result.tar *")
     store_path = f"{res_files_dir}/result.tar"
-    cmd = "docker ps|grep %s|awk '{print $1}'" % port
-    status, container_id = sdk_subprocess(cmd)
 
     return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': store_path, "error_files": err_files,
             "ori_files_dir": ori_files_dir, "res_files_dir": res_files_dir, "container_id": container_id}

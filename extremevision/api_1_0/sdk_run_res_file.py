@@ -110,13 +110,13 @@ def clean_env():
     ori_files_dir = res_datas.get("ori_files_dir")
     res_files_dir = res_datas.get("res_files_dir")
 
-    print("container_id", container_id)
-    if not all([container_id, ori_files_dir, res_files_dir]):
+    if not all([container_id, ori_files_dir]):
         return jsonify(error=RET.DATAERR, errmsg=container_id)
     os.system(f"docker stop {container_id}")
     # 删除 运行文件
     os.system(f"rm -rf {ori_files_dir}")
-    os.system(f"rm -rf {res_files_dir}")
+    if res_files_dir != None:
+        os.system(f"rm -rf {res_files_dir}")
     return jsonify(errno=RET.OK, errmsg="环境清理成功")
 
 
