@@ -36,7 +36,7 @@ def clear_dirs():
     os.makedirs(files)
 
 @celery.task(bind=True)
-def run_files(self, rootDir, port, names, iou, args, alert_info):
+def run_files(self, rootDir, port, names, iou, args, alert_info, hat):
     filenames = iter_files(rootDir)
     xmls = filenames["xmls"]
     files = filenames["files"]
@@ -48,7 +48,11 @@ def run_files(self, rootDir, port, names, iou, args, alert_info):
     time.sleep(3)
     for file in files:
         file_count += 1
-        txt_create(file, port, names, args, alert_info)
+        if hat is not None and hat.endswith("gpu"):
+            hat = "report_num_hat"
+            txt_create(file, port, names, args, alert_info, hat)
+        else:
+            txt_create(file, port, names, args, alert_info)    
         process = int(file_count/total_files*100)
         self.update_state(state='PROGRESS', meta={'current': file_count, 'total': total_files, 'status': process})
     main = os.path.join(path, "utils/sdk_precision/main.py")
@@ -109,7 +113,7 @@ def xml_create(file, path):
                     "%s %s %s %s %s\n" % (name, int(float(xmin)), int(float(ymin)), int(float(xmax)), int(float(ymax))))
 
 
-def txt_create(file, port, names, args, alert_info):
+def txt_create(file, port, names, args, alert_info, hat=None):
     url = request_host_without_port + ":" + str(port) + "/api/analysisImage"
     image = file.split('/')[-1]
     data = {
@@ -132,7 +136,15 @@ def txt_create(file, port, names, args, alert_info):
             confidence = "1"
         for name in names:
             if res.get(name) is not None:
-                name = res.get(name)
+                if hat is not None:
+                    name = "report_num_hat"
+                    name = res.get(name)
+                    if int(name) == 1:
+                        name = "hat"
+                    else:
+                        name = "head"
+                else:
+                    name = res.get(name)
                 x = res.get('x')
                 y = res.get('y')
                 width = res.get('width') + x

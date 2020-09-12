@@ -10,6 +10,8 @@ from flask import request, jsonify, Response
 from xml.etree import ElementTree
 from extremevision.utils.response_codes import RET
 from werkzeug.utils import secure_filename
+from collections import defaultdict
+from xml.etree.ElementTree import parse
 import uuid
 import os
 import random
@@ -48,6 +50,73 @@ def algo_data_set():
     task = deal_with_files_data.delay(file_name, files_dir, port, file_suffix, tag_suffix, tag_kinds)
 
     return jsonify(errno=RET.OK, task_id=task.id)
+
+
+@api.route('/algo_sdk/change_xml_tag', methods=['POST'])
+def change_xml_tag():
+    """
+    用于替换xml标签, 一次只支持替换一个标签, 先不支持替换多个(场景不多)
+    """
+    res_datas = request.values
+    xml_file = request.files.get('xml_file')
+    xml_tag = res_datas.get('xml_tag')
+    change_xml_tag = res_datas.get('change_xml_tag')
+    xml_tag = xml_tag.replace(" ", "")
+    change_xml_tag = change_xml_tag.replace(" ", "")
+
+    filename = xml_file.filename
+    if not filename.lower().endswith('zip'):
+        return jsonify(error=RET.DATAERR, errmsg="上传的图片和xml文件请打包zip格式上传")
+
+    random_str = ''.join([each for each in str(uuid.uuid1()).split('-')])
+    files_dir = os.path.join(path, f"tmp/data_set_file/{random_str}")
+    if not os.path.exists(files_dir):
+        os.makedirs(files_dir)
+    file_name = os.path.join(files_dir, filename)
+    secure_filename(filename)
+    xml_file.save(file_name)
+
+    os.system(f"unzip {file_name} -d {files_dir}")
+    os.system(f"rm -rf {file_name}")
+    filenames = iter_files_xml(files_dir)
+    xmlfiles = filenames["xml_dir"]
+    for xml in xmlfiles:
+        file = xml.split("/")[-1]
+        doc = parse(xml)
+        root = doc.getroot()
+        res_kinds = doc.iterfind('object/name')
+        res_coordinates = doc.iterfind('object/bndbox')
+        for res_kind in res_kinds:
+            if res_kind.text == xml_tag:
+                res_kind.text = change_xml_tag
+                doc.write(xml, xml_declaration=True)
+    os.system(f"cd  {files_dir};tar -cPvf result_xml_change.tar *; mv result_xml_change.tar ..")
+    res_xml = os.path.join(path, f"tmp/data_set_file/result_xml_change.tar")
+    os.system(f"rm -rf {files_dir}")
+    response = Response(send_file(res_xml), content_type='application/octet-stream')
+    response.headers["Content-disposition"] = 'attachment; filename=result_xml_change.tar'
+    return response
+
+def iter_files_xml(rootDir):
+    """
+    根据文件路径 返回文件名称 以及文件路径名称
+    :param rootDir:
+    :return:
+    """
+    filenames = defaultdict(list)
+    for root, dirs, files in os.walk(rootDir):
+        for file in files:
+            file = os.path.join(root, file)
+            if file.lower().endswith("xml"):
+                filenames["xml_dir"].append(file)
+            else:
+                filenames["error_file"].append(file)
+        for dir in dirs:
+            iter_files(dir)
+
+    return filenames
+
+
 
 @api.route('/algo_sdk/format_xml', methods=['POST'])
 def format_xml():

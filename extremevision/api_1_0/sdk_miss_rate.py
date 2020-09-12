@@ -32,7 +32,8 @@ def get_files_result():
     iou = res_datas.get('iou')
     image_name = res_datas.get("image_name")
     args = res_datas.get("args")
-
+    hat = res_datas.get('hat')
+    
     tag_names = tag_names.replace(" ", "").split(",")
     port = random.randint(10000, 65000)
     if not all([tag_names, image_name, alert_info]):
@@ -67,7 +68,7 @@ def get_files_result():
     if res != "0":
         return jsonify(error=RET.ALGOVERSIONERR, errmsg="封装ias失败")
 
-    task = run_files.delay(files_dir, port, tag_names, iou, args, alert_info)
+    task = run_files.delay(files_dir, port, tag_names, iou, args, alert_info, hat)
 
     return jsonify(errno=RET.OK, task_id=task.id)
 
