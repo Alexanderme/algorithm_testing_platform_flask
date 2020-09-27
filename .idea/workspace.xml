@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13704f7f-75de-4989-86ba-6ab7c3f4c830" name="Default Changelist" comment="v3.1.0 update-data-set">
+      <change afterPath="$PROJECT_DIR$/extremevision/sdk_package/vas/Dockerfile3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/extremevision/sdk_package/vas/Dockerfile4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/extremevision/sdk_package/vas/authorization.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extremevision/api_1_0/sdk_vas_ias_svas.py" beforeDir="false" afterPath="$PROJECT_DIR$/extremevision/api_1_0/sdk_vas_ias_svas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extremevision/sdk_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/extremevision/sdk_config.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,16 +57,17 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Administrator\Desktop\extremevision\extremevision\extremevision\sdk_package\ias" />
-      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\libs" />
-      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package\ias" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\extremevision\extremevision\extremevision\sdk_package\vas" />
       <recent name="C:\Users\Administrator\Desktop\extremevision\extremevision\extremevision\sdk_package\ias" />
       <recent name="C:\Users\Administrator\Desktop\flask\extremevision" />
       <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package\ias" />
       <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\extremevision\extremevision\extremevision\sdk_package\ias" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\libs" />
+      <recent name="C:\Users\Administrator\Desktop\flask\extremevision\extremevision\sdk_package\ias" />
     </key>
   </component>
   <component name="RunManager" selected="Python.sdk_performance">
@@ -182,6 +188,7 @@
       <workItem from="1598327318610" duration="4209000" />
       <workItem from="1598521141411" duration="11444000" />
       <workItem from="1598670712526" duration="16607000" />
+      <workItem from="1601172596827" duration="2538000" />
     </task>
     <task id="LOCAL-00001" summary="v1.3">
       <created>1595847787544</created>
@@ -455,10 +462,10 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="752" y="441" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1050@0.0.1920.1050" timestamp="1596072842457" />
-    <state x="112" y="104" width="1462" height="927" key="find.popup" timestamp="1599640327102">
+    <state x="112" y="104" width="1462" height="927" key="find.popup" timestamp="1601173915401">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="112" y="104" width="1462" height="927" key="find.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1599640327102" />
+    <state x="112" y="104" width="1462" height="927" key="find.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1601173915401" />
     <state x="612" y="257" width="672" height="678" key="search.everywhere.popup" timestamp="1599451364602">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>

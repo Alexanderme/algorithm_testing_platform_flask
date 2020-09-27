@@ -5,7 +5,7 @@
 from . import api
 from flask import request, jsonify
 from extremevision.utils.response_codes import RET
-from extremevision.sdk_config import run_sdk_config_GPU, request_host
+from extremevision.sdk_config import run_sdk_config_GPU, request_host, opencv41_dir, opencv34_dir
 from extremevision.api_1_0.sdk_subprocess import sdk_subprocess
 import subprocess
 import requests
@@ -135,3 +135,48 @@ def sdk_opencv_message():
         stop = f"docker stop {contain_id}"
         subprocess.Popen(stop, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return jsonify(errno=RET.OK, errmsg=errmsg, privateKey=privateKey, algo_config=algo_config , OpenCv=OpenCv)
+
+
+
+from extremevision.sdk_config import opencv34_dir, opencv41_dir
+@api.route('/algo_sdk/package_vas', methods=['POST'])
+def deal_with_vas():
+    """
+    # 封装vas
+    :param algo_image:  接收传入的镜像名称:image_name,
+    :return:
+    """
+    res_datas = request.values
+    image_name = res_datas.get('image_name')
+
+    # 获取OpenCV版本
+    url = request_host + "/api/v1.0/algo_sdk/opencv_message"
+    data = {
+        "image_name": image_name
+    }
+    OpenCv = requests.post(url, data=data).json().get("OpenCv")
+
+    # 判断命令上传封装的ias包p
+    if OpenCv == 3.4:
+        docker_vas = f"docker build -t {image_name}_test --build-arg IMAGE_NAME={image_name} -f {opencv34_dir} ."
+    else:
+        docker_vas = f"docker build -t {image_name}_test --build-arg IMAGE_NAME={image_name} -f {opencv41_dir} ."
+    status, res_docker_vas = sdk_subprocess(docker_vas)
+    if not status:
+        return jsonify(errno=RET.DATAERR, errmsg=f"封装失败,请联系管理员, {res_docker_vas}")
+
+    # 上传成功之后解压 安装
+    # 获取到容器id
+    cmd = run_sdk_config_GPU + f"-p {image_name}"
+    status, contain_id = sdk_subprocess(cmd)
+    os.system(f"docker cp ../sdk_package/vas/authorzation.sh {contain_id}:/usr/local/ev_sdk ")
+    os.system(f"docker exec  {contain_id} bash /usr/local/ev_sdk/authorzation.sh")
+
+    cmd = f"docker exec {contain_id} bash -c 'cat /usr/local/vas/vas_data/log/vas.INFO|grep \"ji_init return = 0\"'"
+    status, res_code = sdk_subprocess(cmd)
+    if not status:
+        return jsonify(errno=RET.ALGOVERSIONERR, errmsg=f'封装VAS失败,{res_code}')
+    if int(res_code[-1]) == 0:
+        return jsonify(errno=RET.OK, errmsg='封装IAS成功,可以直接调用IAS')
+    else:
+        return jsonify(errno=RET.ALGOVERSIONERR, errmsg=f'封装VAS失败,{res_code}')
