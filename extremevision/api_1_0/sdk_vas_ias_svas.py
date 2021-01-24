@@ -97,7 +97,7 @@ def sdk_opencv_message():
     else:
         errmsg += "(2):获取授权信息失败, 授权库不是最新的20.1.3" + "\n"
 
-    opencv_message = f"docker exec -it  {contain_id}  bash ldd /usr/local/ev_sdk/lib/libji.so |egrep  'libopencv_core.so.3.4'"
+    opencv_message = f"docker exec -it  {contain_id}  bash ldd /usr/local/ev_sdk/lib/libji.so |egrep  'libopencv_core.so.4'"
     res_p = subprocess.Popen(opencv_message, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = res_p.communicate()
     if stdout.decode('utf-8') is not '':
@@ -167,10 +167,10 @@ def deal_with_vas():
 
     # 上传成功之后解压 安装
     # 获取到容器id
-    cmd = run_sdk_config_GPU + f"-p {image_name}"
+    cmd = run_sdk_config_GPU + f"-p {image_name}_test"
     status, contain_id = sdk_subprocess(cmd)
-    os.system(f"docker cp ../sdk_package/vas/authorzation.sh {contain_id}:/usr/local/ev_sdk ")
-    os.system(f"docker exec  {contain_id} bash /usr/local/ev_sdk/authorzation.sh")
+    os.system(f"docker cp {path}/sdk_package/vas/authorzation.sh {contain_id}:/usr/local/ev_sdk ")
+    os.system(f"docker exec  {contain_id} bash /usr/local/ev_sdk/authorzation.sh &")
 
     cmd = f"docker exec {contain_id} bash -c 'cat /usr/local/vas/vas_data/log/vas.INFO|grep \"ji_init return = 0\"'"
     status, res_code = sdk_subprocess(cmd)

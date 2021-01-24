@@ -89,7 +89,6 @@ def iter_files(rootDir):
                 filenames["files"].append(file)
         for dir in dirs:
             iter_files(dir)
-
     return filenames
 
 

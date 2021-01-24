@@ -103,3 +103,4 @@ def rate_taskstatus():
             'status': str(task.info),
         }
     return jsonify(response)
+
