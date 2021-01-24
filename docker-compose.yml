@@ -1,0 +1,29 @@
+version: '3'
+services:
+   flask:
+    image: extremevision_flask
+    container_name: extremevision_flask
+    restart: always
+    ports:
+      - "5000:80"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /home/ljx/extremevision/tmp/:/home/ljx/extremevision/tmp/
+      
+
+   flask_redis:
+    image: redis:latest
+    container_name: flask_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+   vue_web:
+    image: extremevision_vue
+    container_name: flask_vue
+    restart: always
+    ports:
+      - "80:80"
